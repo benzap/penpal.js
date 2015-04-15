@@ -11,7 +11,9 @@
 var Penpal = Penpal || {};
 (function(context) {
     var PenpalServer = function(serverName, requestHandlers) {
-	this.serverInstances = [{instanceName: "default", instanceSettings: {}}];
+	this.serverInstances = {
+	    "default": {settings: {}},
+	};
 	this.requestHandlers = requestHandlers || {};
 
 	//subscribe each of our request handlers
@@ -25,6 +27,8 @@ var Penpal = Penpal || {};
 			channel: "Penpal." + serverName,
 			topic: requestName,
 			callback: function(data) {
+			    
+			    
 			    console.log("Got this far");
 			}
 		    });
@@ -35,7 +39,7 @@ var Penpal = Penpal || {};
     }
     
     PenpalServer.prototype.start = function(instanceName, serverSettings) {
-	
+	this.serverInstances[instanceName] = {settings: serverSettings};
     }
 
     PenpalServer.prototype.newClient = function(instanceName, clientName) {
@@ -43,7 +47,7 @@ var Penpal = Penpal || {};
     }
     
     var PenpalClient = function(serverInstance, clientName) {
-	this.serverInstance = serverInstance
+	this.serverInstance = serverInstance;
 	this.clientName = clientName || "test";
     }
     
