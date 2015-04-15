@@ -8,7 +8,22 @@
 		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 		<script src="penpal.js"></script>
 		<script type="text/javascript">
-		 console.log("Hello World!");
+
+		 var EchoServer = Penpal.newServer("EchoServer", {
+			 echo: function(value) {
+				 return value;
+			 }
+		 });
+
+		 EchoServer.start("main");
+
+		 
+		 flyer.broadcast({
+			 channel: "Penpal.EchoServer",
+			 topic: "echo",
+			 data: {name: "some value"},
+		 });
+		 
 		</script>
 	</body>
 </html>	

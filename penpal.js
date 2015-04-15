@@ -22,7 +22,7 @@ var Penpal = Penpal || {};
 		if (typeof handler == "function") {
 		    var requestName = handlerKey;
 		    flyer.subscribe({
-			channel: serverName,
+			channel: "Penpal." + serverName,
 			topic: requestName,
 			callback: function(data) {
 			    console.log("Got this far");
