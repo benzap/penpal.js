@@ -1,0 +1,7 @@
+Penpal is a Request-Response Messaging System that works between
+frames, iframes and external windows
+
+* Dependencies
+
+  - [[http://github.com/benzap/flyer.js][flyer.js]]
+  - jquery (for $.Deferred)
