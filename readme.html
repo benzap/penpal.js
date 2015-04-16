@@ -3,8 +3,8 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>Penpal, Request-Response Messaging Server</title>
-<!-- 2015-04-16 Thu 14:22 -->
+<title>Penpal</title>
+<!-- 2015-04-16 Thu 14:38 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Benjamin Zaporzan" />
@@ -140,60 +140,51 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Penpal, Request-Response Messaging Server</h1>
+<h1 class="title">Penpal</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1. Penpal</a></li>
-<li><a href="#sec-2">2. Features and Operation</a></li>
-<li><a href="#sec-3">3. A Basic Example</a></li>
-<li><a href="#sec-4">4. Configuration</a></li>
-<li><a href="#sec-5">5. Usage Notes</a>
+<li><a href="#sec-1">1. Features and Operation</a></li>
+<li><a href="#sec-2">2. A Basic Example</a></li>
+<li><a href="#sec-3">3. Configuration</a></li>
+<li><a href="#sec-4">4. Usage Notes</a>
 <ul>
-<li><a href="#sec-5-1">5.1. Extending our objects to serve data</a></li>
-<li><a href="#sec-5-2">5.2. Examples of extending the server</a></li>
-<li><a href="#sec-5-3">5.3. Handling errors</a></li>
+<li><a href="#sec-4-1">4.1. Extending our objects to serve data</a></li>
+<li><a href="#sec-4-2">4.2. Examples of extending the server</a></li>
+<li><a href="#sec-4-3">4.3. Handling errors</a></li>
 </ul>
 </li>
-<li><a href="#sec-6">6. Javascript API</a></li>
+<li><a href="#sec-5">5. Javascript API</a></li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> Penpal</h2>
-<div class="outline-text-2" id="text-1">
 <p>
 Penpal is a Request-Response Messaging System that works between
 frames, iframes and external windows.
 </p>
-</div>
-</div>
 
-<div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> Features and Operation</h2>
-<div class="outline-text-2" id="text-2">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Features and Operation</h2>
+<div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li>Responses are returned in the form of a Promise Object
+<li>Define a <b>server prototype</b>, and create server instances from it.
 </li>
-<li>Defining a server as as simple as writing a bunch of functions
+<li>Responses from server instances are returned in the form of a Promise Object
 </li>
 <li>Create clients which communicate to the server by a unique keyword
 defining the server instance
 </li>
 <li>Server instances can be easily extended into any application
-through the use of an object reference
-</li>
-<li>Messages sent between client and server has to be JSON Serializable.
+through the use of any object reference
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> A Basic Example</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> A Basic Example</h2>
+<div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 
 <pre class="src src-js"><span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Define our echo server</span>
@@ -206,26 +197,24 @@ through the use of an object reference
 <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Create a server instance with a unique keyword</span>
 EchoServer.start(<span style="color: #8CBED6;">"main"</span>);
 
-
-
 <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Create a client to communicate to our server instance</span>
 <span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">client</span> = EchoServer.newClient(<span style="color: #8CBED6;">"main"</span>);
 
 <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Use our client to echo to the server</span>
 <span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">response</span> = client.echo(<span style="color: #8CBED6;">"Hello World!"</span>);
 
-<span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">retrieve the response from our promise</span>
+<span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">retrieve the response from our returned promise</span>
 response.done(<span style="color: #DEC77B;">function</span>(<span style="color: #EFA252;">responseString</span>) {
-  console.log(<span style="color: #8CBED6;">"Client Recieved the response: "</span>, responseString);
+  console.log(<span style="color: #8CBED6;">"Client Recieved the response: "</span>, responseString); <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Hello World!</span>
 });
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> Configuration</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Configuration</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 <b>penpal.js</b> uses the parent project <a href="http://github.com/benzap/flyer.js">flyer.js</a> to magically send
 messages between frames, iframes, and external windows. You can
@@ -234,7 +223,8 @@ grab the version I used from <a href="https://github.com/benzap/flyer.js/release
 
 <p>
 I also used jquery $.Deferred (jquery 1.11.0) for the promise
-functionality, which was obtained from the CDN.
+functionality, which was obtained from the CDN. As long as your
+version of Jquery has $.Deferred, it should work.
 </p>
 
 <p>
@@ -243,20 +233,20 @@ Here is what would be required at the end of your page body:
 
 <div class="org-src-container">
 
-<pre class="src src-html">&lt;<span style="color: #D65921;">script</span> <span style="color: #EFA252;">src</span>=<span style="color: #8CBED6;">"deps/flyer.min.js"</span>&gt;&lt;/<span style="color: #D65921;">script</span>&gt;
-&lt;<span style="color: #D65921;">script</span> <span style="color: #EFA252;">src</span>=<span style="color: #8CBED6;">"//code.jquery.com/jquery-1.11.0.min.js"</span>&gt;&lt;/<span style="color: #D65921;">script</span>&gt;
+<pre class="src src-html">&lt;<span style="color: #D65921;">script</span> <span style="color: #EFA252;">src</span>=<span style="color: #8CBED6;">"//code.jquery.com/jquery-1.11.0.min.js"</span>&gt;&lt;/<span style="color: #D65921;">script</span>&gt;
+&lt;<span style="color: #D65921;">script</span> <span style="color: #EFA252;">src</span>=<span style="color: #8CBED6;">"flyer.min.js"</span>&gt;&lt;/<span style="color: #D65921;">script</span>&gt;
 &lt;<span style="color: #D65921;">script</span> <span style="color: #EFA252;">src</span>=<span style="color: #8CBED6;">"penpal.js"</span>&gt;&lt;/<span style="color: #D65921;">script</span>&gt;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> Usage Notes</h2>
-<div class="outline-text-2" id="text-5">
-</div><div id="outline-container-sec-5-1" class="outline-3">
-<h3 id="sec-5-1"><span class="section-number-3">5.1</span> Extending our objects to serve data</h3>
-<div class="outline-text-3" id="text-5-1">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Usage Notes</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Extending our objects to serve data</h3>
+<div class="outline-text-3" id="text-4-1">
 <p>
 Say we have listing of Food Items being displayed on the page. This
 listing of food items is controlled by the Object FoodManager
@@ -299,7 +289,7 @@ which shows whatever is currently listed there
 
 <p>
 Updating our food view might be as simple as adding new food items
-to the manager
+to the manager (and refreshing the view)
 </p>
 
 <div class="org-src-container">
@@ -312,7 +302,7 @@ to the manager
 </div>
 
 <p>
-What if we want to access the data for the foodManager in a
+But what if we want to access the data for the foodManager in a
 different frame, iframe, or external window? Normally we could try
 combing through the window.frames, or try going down through the
 window.opener, but we can do better.
@@ -320,12 +310,13 @@ window.opener, but we can do better.
 
 <p>
 Let's extend the foodManager to be accessed from any frame, iframe,
-or external window using Penpal.
+or external window using <b>Penpal</b>.
 </p>
 
 <p>
-First off, we need to define a server class, which is provided as a
-<b>prototype</b> for servers and clients to follow
+First off, we need to define our <b>server prototype</b> using
+<b>Penpal.newServer</b>. This is used to instantiate servers and clients
+for communication.
 </p>
 
 <div class="org-src-container">
@@ -343,7 +334,7 @@ First off, we need to define a server class, which is provided as a
 <p>
 Next, the <b>server prototype</b> needs to be instantiated, and the
 foodManager instance that we wish to link to will be included as
-the serverObject
+the serverObject as an extension.
 </p>
 
 <div class="org-src-container">
@@ -354,9 +345,9 @@ FoodServer.start(<span style="color: #8CBED6;">"main-foodmanager"</span>, foodMa
 </div>
 
 <p>
-Now, if we want to service this information to 'anywhere else' in
-our application, we would simply call it by instantiating a client
-to grab that data.
+Now, if we want to service this information to <i>anywhere else</i> in
+our application, we would call it by instantiating a client to grab
+that data.
 </p>
 
 <div class="org-src-container">
@@ -375,19 +366,20 @@ Kind of magical, don't you think?
 </div>
 </div>
 
-<div id="outline-container-sec-5-2" class="outline-3">
-<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Examples of extending the server</h3>
-<div class="outline-text-3" id="text-5-2">
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Examples of extending the server</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 If you plan on using the server standalone, you can pass in an
 object when you first start a new server instance to configure the
-server accordingly
+server accordingly.
 </p>
 
 <p>
 For example, we have a prefixed echo server that by default
 prefixes the messages returned with "Hello"
 </p>
+
 <div class="org-src-container">
 
 <pre class="src src-js"><span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">PrefixedEchoServer</span> = <span style="color: #DEC77B;">function</span>(<span style="color: #8CBED6;">"EchoServer"</span>, {
@@ -416,25 +408,29 @@ Calling these with clients will result in different outputs
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">pirateClient</span> = PrefixedEchoServer.newClient(<span style="color: #8CBED6;">"pirate"</span>).echo(<span style="color: #8CBED6;">"Ben"</span>).then(<span style="color: #DEC77B;">function</span>(<span style="color: #EFA252;">response</span>) {
-  console.log(response); <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Yarr Ben!</span>
-});
+<pre class="src src-js"><span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">pirateClient</span> = PrefixedEchoServer.newClient(<span style="color: #8CBED6;">"pirate"</span>)
+  .echo(<span style="color: #8CBED6;">"Ben"</span>)
+  .then(<span style="color: #DEC77B;">function</span>(<span style="color: #EFA252;">response</span>) {
+    console.log(response); <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Yarr Ben!</span>
+  });
 
-<span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">pirateClient</span> = PrefixedEchoServer.newClient(<span style="color: #8CBED6;">"german"</span>).echo(<span style="color: #8CBED6;">"Ben"</span>).then(<span style="color: #DEC77B;">function</span>(<span style="color: #EFA252;">response</span>) {
-  console.log(response); <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Guten Tag Ben!</span>
-});
+<span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">pirateClient</span> = PrefixedEchoServer.newClient(<span style="color: #8CBED6;">"german"</span>)
+  .echo(<span style="color: #8CBED6;">"Ben"</span>)
+  .then(<span style="color: #DEC77B;">function</span>(<span style="color: #EFA252;">response</span>) {
+    console.log(response); <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">Guten Tag Ben!</span>
+  });
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-sec-5-3" class="outline-3">
-<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Handling errors</h3>
-<div class="outline-text-3" id="text-5-3">
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> Handling errors</h3>
+<div class="outline-text-3" id="text-4-3">
 <p>
 One thing that becomes more difficult when working with clients and
 servers is handling cases where the server stops working, doesn't
-exist, or receives invalid input arguments
+exist, or receives invalid input arguments.
 </p>
 
 <p>
@@ -452,11 +448,12 @@ don't go your way
       <span style="color: #DEC77B;">return</span> Penpal.ResponseCode.INVALID;
     }
     <span style="color: #DEC77B;">else</span> {
-      <span style="color: #DEC77B;">return</span> <span style="color: #DEC77B;">null</span>;
+      <span style="color: #DEC77B;">return</span> <span style="color: #8CBED6;">"success"</span>;
     }
   }
 });
 
+#+BEGIN_SRC
 PickyFoodServer.start(<span style="color: #8CBED6;">"main"</span>);
 
 <span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">client</span> = PickyFoodServer.newClient(<span style="color: #8CBED6;">"main"</span>);
@@ -479,7 +476,8 @@ client's optional arguments.
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">client</span> = PickyFoodServer.newClient(<span style="color: #8CBED6;">"main"</span>, {timeout: 1}) <span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">1ms is too short, so a timeout occurs</span>
+<pre class="src src-js"><span style="color: #6F8F6F;">//</span><span style="color: #7F9F7F;">1ms is too short, so a timeout occurs</span>
+<span style="color: #DEC77B;">var</span> <span style="color: #EFA252;">client</span> = PickyFoodServer.newClient(<span style="color: #8CBED6;">"main"</span>, {timeout: 1}) 
 client.giveFood(<span style="color: #8CBED6;">"banana"</span>)
   .then(<span style="color: #DEC77B;">function</span>() {
     console.log(<span style="color: #8CBED6;">"this isn't called"</span>)
@@ -501,9 +499,9 @@ client.giveFood(<span style="color: #8CBED6;">"banana"</span>)
 </div>
 </div>
 
-<div id="outline-container-sec-6" class="outline-2">
-<h2 id="sec-6"><span class="section-number-2">6</span> Javascript API</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Javascript API</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 <i>work in progress</i>
 </p>
@@ -513,7 +511,7 @@ client.giveFood(<span style="color: #8CBED6;">"banana"</span>)
 <div id="postamble" class="status">
 <p class="date">Date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2015-04-16 Thu&gt;</span></span></p>
 <p class="author">Author: Benjamin Zaporzan</p>
-<p class="date">Created: 2015-04-16 Thu 14:22</p>
+<p class="date">Created: 2015-04-16 Thu 14:38</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.7c)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>

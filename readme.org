@@ -11,13 +11,12 @@
   frames, iframes and external windows.
 
 * Features and Operation
-  - Responses are returned in the form of a Promise Object
-  - Defining a server as as simple as writing a bunch of functions
+  - Define a *server prototype*, and create server instances from it.
+  - Responses from server instances are returned in the form of a Promise Object
   - Create clients which communicate to the server by a unique keyword
     defining the server instance
   - Server instances can be easily extended into any application
-    through the use of an object reference
-  - Messages sent between client and server has to be JSON Serializable.
+    through the use of any object reference
 
 * A Basic Example
 
@@ -32,17 +31,15 @@
   //Create a server instance with a unique keyword
   EchoServer.start("main");
 
-
-
   //Create a client to communicate to our server instance
   var client = EchoServer.newClient("main");
 
   //Use our client to echo to the server
   var response = client.echo("Hello World!");
 
-  //retrieve the response from our promise
+  //retrieve the response from our returned promise
   response.done(function(responseString) {
-    console.log("Client Recieved the response: ", responseString);
+    console.log("Client Recieved the response: ", responseString); //Hello World!
   });
   #+END_SRC
 
@@ -52,13 +49,14 @@
   grab the version I used from [[https://github.com/benzap/flyer.js/releases/download/v1.1.0/flyer.min.js][here]]
 
   I also used jquery $.Deferred (jquery 1.11.0) for the promise
-  functionality, which was obtained from the CDN.
+  functionality, which was obtained from the CDN. As long as your
+  version of Jquery has $.Deferred, it should work.
  
   Here is what would be required at the end of your page body:
 
   #+BEGIN_SRC html
-  <script src="deps/flyer.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="flyer.min.js"></script>
   <script src="penpal.js"></script>
   #+END_SRC
 
@@ -97,7 +95,7 @@
    #+END_SRC
 
    Updating our food view might be as simple as adding new food items
-   to the manager
+   to the manager (and refreshing the view)
 
    #+BEGIN_SRC js
    foodManager
@@ -106,16 +104,17 @@
      .addItem("orange")
    #+END_SRC
 
-   What if we want to access the data for the foodManager in a
+   But what if we want to access the data for the foodManager in a
    different frame, iframe, or external window? Normally we could try
    combing through the window.frames, or try going down through the
    window.opener, but we can do better.
 
    Let's extend the foodManager to be accessed from any frame, iframe,
-   or external window using Penpal.
+   or external window using *Penpal*.
 
-   First off, we need to define a server class, which is provided as a
-   *prototype* for servers and clients to follow
+   First off, we need to define our *server prototype* using
+   *Penpal.newServer*. This is used to instantiate servers and clients
+   for communication.
 
    #+BEGIN_SRC js
      //This would be placed in a separate file, and the javascript src
@@ -129,16 +128,16 @@
 
    Next, the *server prototype* needs to be instantiated, and the
    foodManager instance that we wish to link to will be included as
-   the serverObject
+   the serverObject as an extension.
 
    #+BEGIN_SRC js
      //This would be called on the page including the foodManager instance
      FoodServer.start("main-foodmanager", foodManager);
    #+END_SRC
 
-   Now, if we want to service this information to 'anywhere else' in
-   our application, we would simply call it by instantiating a client
-   to grab that data.
+   Now, if we want to service this information to /anywhere else/ in
+   our application, we would call it by instantiating a client to grab
+   that data.
 
    #+BEGIN_SRC js
    //some other frame, iframe, or external window
@@ -153,10 +152,11 @@
 ** Examples of extending the server
    If you plan on using the server standalone, you can pass in an
    object when you first start a new server instance to configure the
-   server accordingly
+   server accordingly.
 
    For example, we have a prefixed echo server that by default
    prefixes the messages returned with "Hello"
+
    #+BEGIN_SRC js
    var PrefixedEchoServer = function("EchoServer", {
      echo: function(value) {
@@ -176,19 +176,23 @@
    Calling these with clients will result in different outputs
 
    #+BEGIN_SRC js
-   var pirateClient = PrefixedEchoServer.newClient("pirate").echo("Ben").then(function(response) {
-     console.log(response); //Yarr Ben!
-   });
+   var pirateClient = PrefixedEchoServer.newClient("pirate")
+     .echo("Ben")
+     .then(function(response) {
+       console.log(response); //Yarr Ben!
+     });
   
-   var pirateClient = PrefixedEchoServer.newClient("german").echo("Ben").then(function(response) {
-     console.log(response); //Guten Tag Ben!
-   });
+   var pirateClient = PrefixedEchoServer.newClient("german")
+     .echo("Ben")
+     .then(function(response) {
+       console.log(response); //Guten Tag Ben!
+     });
    #+END_SRC
 
 ** Handling errors
    One thing that becomes more difficult when working with clients and
    servers is handling cases where the server stops working, doesn't
-   exist, or receives invalid input arguments
+   exist, or receives invalid input arguments.
 
    Fortunately, all of this is handled through the promise object, and
    makes it easy to generate errors, and provide easy failover when things
@@ -202,7 +206,7 @@
          return Penpal.ResponseCode.INVALID;
        }
        else {
-         return null;
+         return "success";
        }
      }
    });
@@ -226,7 +230,8 @@
    client's optional arguments.
 
    #+BEGIN_SRC js
-   var client = PickyFoodServer.newClient("main", {timeout: 1}) //1ms is too short, so a timeout occurs
+   //1ms is too short, so a timeout occurs
+   var client = PickyFoodServer.newClient("main", {timeout: 1}) 
    client.giveFood("banana")
      .then(function() {
        console.log("this isn't called")
