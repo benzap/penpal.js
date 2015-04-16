@@ -9,6 +9,8 @@
 
   Penpal is a Request-Response Messaging System that works between
   frames, iframes and external windows.
+  
+  It leverages the power of [[http://github.com/benzap/flyer.js][flyer.js]]
 
 * Features and Operation
   - Define a *server prototype*, and create server instances from it.
@@ -113,8 +115,7 @@
    or external window using *Penpal*.
 
    First off, we need to define our *server prototype* using
-   *Penpal.newServer*. This is used to instantiate servers and clients
-   for communication.
+   *Penpal.newServer*.
 
    #+BEGIN_SRC js
      //This would be placed in a separate file, and the javascript src
@@ -155,7 +156,7 @@
    server accordingly.
 
    For example, we have a prefixed echo server that by default
-   prefixes the messages returned with "Hello"
+   prefixes the responses with "Hello"
 
    #+BEGIN_SRC js
    var PrefixedEchoServer = function("EchoServer", {
@@ -170,7 +171,7 @@
 
    #+BEGIN_SRC js
    PrefixedEchoServer("pirate", {prefix: "Yarr"});
-   PrefixedEchoServer("german", {prefix: "Guten Tag"
+   PrefixedEchoServer("german", {prefix: "Guten Tag"})
    #+END_SRC
 
    Calling these with clients will result in different outputs

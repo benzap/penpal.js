@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Penpal</title>
-<!-- 2015-04-16 Thu 14:38 -->
+<!-- 2015-04-16 Thu 14:44 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Benjamin Zaporzan" />
@@ -164,6 +164,10 @@ Penpal is a Request-Response Messaging System that works between
 frames, iframes and external windows.
 </p>
 
+<p>
+It leverages the power of <a href="http://github.com/benzap/flyer.js">flyer.js</a>
+</p>
+
 <div id="outline-container-sec-1" class="outline-2">
 <h2 id="sec-1"><span class="section-number-2">1</span> Features and Operation</h2>
 <div class="outline-text-2" id="text-1">
@@ -315,8 +319,7 @@ or external window using <b>Penpal</b>.
 
 <p>
 First off, we need to define our <b>server prototype</b> using
-<b>Penpal.newServer</b>. This is used to instantiate servers and clients
-for communication.
+<b>Penpal.newServer</b>.
 </p>
 
 <div class="org-src-container">
@@ -377,7 +380,7 @@ server accordingly.
 
 <p>
 For example, we have a prefixed echo server that by default
-prefixes the messages returned with "Hello"
+prefixes the responses with "Hello"
 </p>
 
 <div class="org-src-container">
@@ -398,7 +401,7 @@ We can extend this server by providing a new prefix value
 <div class="org-src-container">
 
 <pre class="src src-js">PrefixedEchoServer(<span style="color: #8CBED6;">"pirate"</span>, {prefix: <span style="color: #8CBED6;">"Yarr"</span>});
-PrefixedEchoServer(<span style="color: #8CBED6;">"german"</span>, {prefix: <span style="color: #8CBED6;">"Guten Tag"</span>
+PrefixedEchoServer(<span style="color: #8CBED6;">"german"</span>, {prefix: <span style="color: #8CBED6;">"Guten Tag"</span>})
 </pre>
 </div>
 
@@ -511,7 +514,7 @@ client.giveFood(<span style="color: #8CBED6;">"banana"</span>)
 <div id="postamble" class="status">
 <p class="date">Date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2015-04-16 Thu&gt;</span></span></p>
 <p class="author">Author: Benjamin Zaporzan</p>
-<p class="date">Created: 2015-04-16 Thu 14:38</p>
+<p class="date">Created: 2015-04-16 Thu 14:44</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.7c)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
