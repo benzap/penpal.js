@@ -35,9 +35,11 @@
 			 console.log(resp);
 		 });
 
-		 var client2 = EchoServer.newClient("pirate");
+		 var client2 = EchoServer.newClient("pirate", {timeout: 100});
 		 client2.echo("heya").done(function(resp) {
 			 console.log(resp);
+		 }).fail(function(errorResponseCode) {
+			 console.error(errorResponseCode);
 		 });
 		 
 		</script>

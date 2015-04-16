@@ -254,7 +254,7 @@ var Penpal = Penpal || {};
     /* Returns a function that rejects the deferred object with a
      * timeout response
      */
-    PenpalClient.prototype.generateResponseTimeout = function(responseId) {
+    PenpalClient.prototype.generateResponseTimeout = function(requestId) {
 	return function() {
 	    if (requestId && this.requestListing.hasOwnProperty(requestId)) {
 		var deferredObject = this.requestListing[requestId].deferred;
