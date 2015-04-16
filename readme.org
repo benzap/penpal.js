@@ -62,7 +62,8 @@
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src="flyer.min.js"></script>
   <script src="penpal.js"></script>
-  #+END_S
+  #+END_SRC
+
 * Download
   [[https://github.com/benzap/penpal.js/releases/tag/v0.0.1][Version 0.0.1]]
 
