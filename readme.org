@@ -1,7 +1,249 @@
-Penpal is a Request-Response Messaging System that works between
-frames, iframes and external windows
+#+TITLE:       Penpal, Request-Response Messaging Server
+#+AUTHOR:      Benjamin Zaporzan
+#+DATE:        <2015-04-16 Thu>
+#+EMAIL:       benzaporan@gmail.com
+#+DESCRIPTION: Readme documentation on penpal javascript library
+#+KEYWORDS:    javascript, messaging, iframes, frames, external windows
+#+LANGUAGE:    en
+#+OPTIONS:     ^:nil
 
-* Dependencies
+* Penpal 
 
-  - [[http://github.com/benzap/flyer.js][flyer.js]]
-  - jquery (for $.Deferred)
+  Penpal is a Request-Response Messaging System that works between
+  frames, iframes and external windows.
+
+* Features and Operation
+  - Responses are returned in the form of a Promise Object
+  - Defining a server as as simple as writing a bunch of functions
+  - Create clients which communicate to the server by a unique keyword
+    defining the server instance
+  - Server instances can be easily extended into any application
+    through the use of an object reference
+  - Messages sent between client and server has to be JSON Serializable.
+
+* A Basic Example
+
+  #+BEGIN_SRC js
+  //Define our echo server
+  var EchoServer = Penpal.newServer("EchoServer", {
+    echo: function(value) {
+      return value;
+    }
+  });
+
+  //Create a server instance with a unique keyword
+  EchoServer.start("main");
+
+
+
+  //Create a client to communicate to our server instance
+  var client = EchoServer.newClient("main");
+
+  //Use our client to echo to the server
+  var response = client.echo("Hello World!");
+
+  //retrieve the response from our promise
+  response.done(function(responseString) {
+    console.log("Client Recieved the response: ", responseString);
+  });
+  #+END_SRC
+
+* Configuration
+  *penpal.js* uses the parent project [[http://github.com/benzap/flyer.js][flyer.js]] to magically send
+  messages between frames, iframes, and external windows. You can
+  grab the version I used from [[https://github.com/benzap/flyer.js/releases/download/v1.1.0/flyer.min.js][here]]
+
+  I also used jquery $.Deferred (jquery 1.11.0) for the promise
+  functionality, which was obtained from the CDN.
+ 
+  Here is what would be required at the end of your page body:
+
+  #+BEGIN_SRC html
+  <script src="deps/flyer.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="penpal.js"></script>
+  #+END_SRC
+
+* Usage Notes
+** Extending our objects to serve data
+   Say we have listing of Food Items being displayed on the page. This
+   listing of food items is controlled by the Object FoodManager
+
+   #+BEGIN_SRC js
+   var FoodManager = function() {
+     this.listing = [];
+   }
+
+   FoodManager.prototype.addFoodItem = function(name) {
+     this.listing.push(name);
+     return this;
+   }
+
+   FoodManager.prototype.removeFoodByName = function(name) {
+     this.listing = this.listing.filter(function(n) { n != name });
+   }
+
+   FoodManager.prototype.getFoodListing = function(name) {
+     return this.listing;
+   }
+
+   /* other functions left out */
+   #+END_SRC
+
+   We instantiate this FoodManager and assign it to some sort of view,
+   which shows whatever is currently listed there
+
+   #+BEGIN_SRC js
+   var foodManager = new FoodManager();
+   var foodView = new FoodView(foodManager);
+   #+END_SRC
+
+   Updating our food view might be as simple as adding new food items
+   to the manager
+
+   #+BEGIN_SRC js
+   foodManager
+     .addItem("banana")
+     .addItem("apple")
+     .addItem("orange")
+   #+END_SRC
+
+   What if we want to access the data for the foodManager in a
+   different frame, iframe, or external window? Normally we could try
+   combing through the window.frames, or try going down through the
+   window.opener, but we can do better.
+
+   Let's extend the foodManager to be accessed from any frame, iframe,
+   or external window using Penpal.
+
+   First off, we need to define a server class, which is provided as a
+   *prototype* for servers and clients to follow
+
+   #+BEGIN_SRC js
+     //This would be placed in a separate file, and the javascript src
+     //would be shared among webpages.
+     var FoodServer = Penpal.newServer("FoodServer", {
+       getFoodListing: function() {
+         return this.getFoodListing();
+       }
+     });
+   #+END_SRC
+
+   Next, the *server prototype* needs to be instantiated, and the
+   foodManager instance that we wish to link to will be included as
+   the serverObject
+
+   #+BEGIN_SRC js
+     //This would be called on the page including the foodManager instance
+     FoodServer.start("main-foodmanager", foodManager);
+   #+END_SRC
+
+   Now, if we want to service this information to 'anywhere else' in
+   our application, we would simply call it by instantiating a client
+   to grab that data.
+
+   #+BEGIN_SRC js
+   //some other frame, iframe, or external window
+   var foodClient = FoodServer.newClient("main-foodmanager");
+   foodClient.getFoodListing().then(function(listing) {
+     console.log("The food listing", listing);
+   })
+   #+END_SRC
+
+   Kind of magical, don't you think?
+
+** Examples of extending the server
+   If you plan on using the server standalone, you can pass in an
+   object when you first start a new server instance to configure the
+   server accordingly
+
+   For example, we have a prefixed echo server that by default
+   prefixes the messages returned with "Hello"
+   #+BEGIN_SRC js
+   var PrefixedEchoServer = function("EchoServer", {
+     echo: function(value) {
+       var prefix = this.prefix || "Hello";
+       return prefix + " " + value + "!"
+     }
+   });
+   #+END_SRC
+
+   We can extend this server by providing a new prefix value
+
+   #+BEGIN_SRC js
+   PrefixedEchoServer("pirate", {prefix: "Yarr"});
+   PrefixedEchoServer("german", {prefix: "Guten Tag"
+   #+END_SRC
+
+   Calling these with clients will result in different outputs
+
+   #+BEGIN_SRC js
+   var pirateClient = PrefixedEchoServer.newClient("pirate").echo("Ben").then(function(response) {
+     console.log(response); //Yarr Ben!
+   });
+  
+   var pirateClient = PrefixedEchoServer.newClient("german").echo("Ben").then(function(response) {
+     console.log(response); //Guten Tag Ben!
+   });
+   #+END_SRC
+
+** Handling errors
+   One thing that becomes more difficult when working with clients and
+   servers is handling cases where the server stops working, doesn't
+   exist, or receives invalid input arguments
+
+   Fortunately, all of this is handled through the promise object, and
+   makes it easy to generate errors, and provide easy failover when things
+   don't go your way
+
+   #+BEGIN_SRC js
+   PickyFoodServer = Penpal.newServer("PickyServer", {
+     giveFood: function(name) {
+       if (name == "apple") {
+         console.error("Eww, I don't like apples");
+         return Penpal.ResponseCode.INVALID;
+       }
+       else {
+         return null;
+       }
+     }
+   });
+
+   PickyFoodServer.start("main");
+   
+   var client = PickyFoodServer.newClient("main");
+   client.giveFood("apple")
+     .then(function() {
+       console.log("this isn't called")
+     })
+     .fail(function() {
+       console.error("this will be called");
+     });
+   #+END_SRC
+
+   Penpal also includes timeout functionality, which by default is set
+   to 5 seconds (5000 milliseconds). If you wish to increase or
+   decrease this timeout value, it can be supplied through the
+   client's optional arguments.
+
+   #+BEGIN_SRC js
+   var client = PickyFoodServer.newClient("main", {timeout: 1}) //1ms is too short, so a timeout occurs
+   client.giveFood("banana")
+     .then(function() {
+       console.log("this isn't called")
+     })
+     .fail(function(errCode) {
+       if (errCode == Penpal.ResponseCode.INVALID) {
+         console.error("Invalid input... did you give the server apples?");
+       }
+       else if (errCode == Penpal.ResponseCode.TIMEOUT) {
+         console.error("Service Request Timeout");
+       }
+       else {
+         console.error("Unknown error!");
+       }
+     });
+   #+END_SRC
+
+* Javascript API
+  /work in progress/
