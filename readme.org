@@ -41,7 +41,7 @@
 
   //retrieve the response from our returned promise
   response.done(function(responseString) {
-    console.log("Client Recieved the response: ", responseString); //Hello World!
+    console.log("Client Received the response: ", responseString); //Hello World!
   });
   #+END_SRC
 
