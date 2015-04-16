@@ -1,4 +1,4 @@
-#+TITLE:       Penpal, Request-Response Messaging Server
+#+TITLE:       Penpal
 #+AUTHOR:      Benjamin Zaporzan
 #+DATE:        <2015-04-16 Thu>
 #+EMAIL:       benzaporan@gmail.com
@@ -6,8 +6,6 @@
 #+KEYWORDS:    javascript, messaging, iframes, frames, external windows
 #+LANGUAGE:    en
 #+OPTIONS:     ^:nil
-
-* Penpal 
 
   Penpal is a Request-Response Messaging System that works between
   frames, iframes and external windows.
@@ -209,6 +207,7 @@
      }
    });
 
+   #+BEGIN_SRC
    PickyFoodServer.start("main");
    
    var client = PickyFoodServer.newClient("main");
