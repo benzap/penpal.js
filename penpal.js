@@ -12,7 +12,8 @@
 
 var Penpal = Penpal || {};
 (function(context) {
-
+    context.VERSION = "v0.0.1";
+    
     //Provided Response Code
     context.ResponseCode = {
 	//returned as a response to trigger a promise rejection on the client side
