@@ -17,12 +17,18 @@
 
 		 EchoServer.start("main");
 
-		 
+		 var client = EchoServer.newClient("main");
+		 client.echo("test").then(function(resp) {
+			 console.log(resp);
+		 });;
+
+		 /*
 		 flyer.broadcast({
-			 channel: "Penpal.EchoServer",
+			 channel: "Penpal.Request.EchoServer",
 			 topic: "echo",
 			 data: {name: "some value"},
 		 });
+		 */
 		 
 		</script>
 	</body>
