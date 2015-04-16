@@ -11,24 +11,34 @@
 
 		 var EchoServer = Penpal.newServer("EchoServer", {
 			 echo: function(value) {
-				 return value;
+				 var prefix = this.settings && this.settings.prefix || "hello";
+
+				 if (value == "test") {
+					 console.error("We don't like tests around here");
+					 return Penpal.ResponseCode.INVALID;
+				 }
+				 return prefix + " " + value;
 			 }
 		 });
 
+		 EchoServer.start("pirate", {settings: {prefix: "yarr!"}});
 		 EchoServer.start("main");
-
+		 
 		 var client = EchoServer.newClient("main");
-		 client.echo("test").then(function(resp) {
+		 client.echo("test").done(function(resp) {
 			 console.log(resp);
-		 });;
-
-		 /*
-		 flyer.broadcast({
-			 channel: "Penpal.Request.EchoServer",
-			 topic: "echo",
-			 data: {name: "some value"},
+		 }).fail(function(errorResponseCode) {
+			 console.error(errorResponseCode);
 		 });
-		 */
+
+		 client.echo("test2").then(function(resp) {
+			 console.log(resp);
+		 });
+
+		 var client2 = EchoServer.newClient("pirate");
+		 client2.echo("heya").done(function(resp) {
+			 console.log(resp);
+		 });
 		 
 		</script>
 	</body>
