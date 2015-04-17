@@ -173,8 +173,8 @@
    We can extend this server by providing a new prefix value
 
    #+BEGIN_SRC js
-   PrefixedEchoServer("pirate", {prefix: "Yarr"});
-   PrefixedEchoServer("german", {prefix: "Guten Tag"})
+   PrefixedEchoServer.start("pirate", {prefix: "Yarr"});
+   PrefixedEchoServer.start("german", {prefix: "Guten Tag"});
    #+END_SRC
 
    Calling these with clients will result in different outputs
